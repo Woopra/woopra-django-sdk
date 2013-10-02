@@ -1,6 +1,6 @@
 # coding: utf-8
 import string
-import random
+import random3*2
 
 from django.http import HttpRequest
 from django.http import HttpResponse
@@ -50,9 +50,28 @@ class WoopraTracker:
 
 		self.currentConfig["cookie_value"] = request.COOKIES.get(self.currentConfig["cookie_name"], self.randomCookie())
 
+	def printJavaScriptConfiguration():
+
+	def printJavaScriptIdentification():
+
+	def printJavaScriptEvents():
+
+	def woopraHttpRequest():
+
+	def woopraCode():
+
+	def config():
+
+	def identify():
+
+	def track():
+
+	def push():
+		
+
 
 	def setWoopraCookie(self):
-		
+		self.response.set_cookie(self.currentConfig["cookie_name"], self.currentConfig["cookie_value"], 60*60*24*365*2)
 
 	def randomCookie(self):
 		return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(12))
