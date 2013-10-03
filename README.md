@@ -3,7 +3,7 @@ Track customers directly in the Django Web Framework using Woopra's Django SDK
 The SDK can be used both for front-end and back-end tracking. In either cases, the first step is to setup the tracker SDK in your <code>views.py</code> file. For example, if you want to set up tracking with Woopra on your homepage, the file <code>views.py</code> should look like:
 ``` python
 #import the SDK
-import woopraTracker
+import woopra_tracker
 
 def homepage(request):
    woopra = woopraTracker.WoopraTracker(request)
