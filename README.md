@@ -58,11 +58,11 @@ and add the hook in your template's header (here <code>homepage.html</code>)
 <!DOCTYPE html>
 <html>
    <head>
-      # Your header here...
+      <!-- Your header here... -->
       {{ woopra_code }}
    </head>
    <body>
-      # Your body here...
+      <!-- Your body here... -->
 
    </body>
 </html>
@@ -70,6 +70,6 @@ and add the hook in your template's header (here <code>homepage.html</code>)
 If you identify the user after the last tracking event, don't forget to push() the update to Woopra:
 ``` python
 woopra.identify(user).push()
-//or, to push through back-end:
+# or, to push through back-end:
 woopra.identify(user).push(True)
 ```
