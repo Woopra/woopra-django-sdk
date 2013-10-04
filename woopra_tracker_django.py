@@ -7,9 +7,9 @@ import urllib
 import httplib
 from django.http import HttpRequest
 from django.http import HttpResponse
-import woopraTracker
+import woopra_tracker
 
-class WoopraTrackerDjango(woopraTracker.WoopraTracker):
+class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 	"""
 	Woopra Python SDK.
 	This class represents the Python equivalent of the JavaScript Woopra Object.
@@ -98,7 +98,7 @@ class WoopraTrackerDjango(woopraTracker.WoopraTracker):
 		return self
 
 
-	def set_woopra_cookie(self, response):
+	def send_woopra_cookie(self, response):
 		"""
 		Sets the woopra cookie.
 		Parameter:
