@@ -5,8 +5,6 @@ import random
 import json
 import urllib
 import httplib
-from django.http import HttpRequest
-from django.http import HttpResponse
 
 class WoopraTracker:
 	"""
@@ -34,31 +32,23 @@ class WoopraTracker:
 	}
 
 
-	def __init__(self, request):
+	def __init__(self):
 		"""
 		The constructor.
 		Parameter:
-			request - HttpRequest : The request sent by the user we want to track.
+			None
 		Result:
 			WoopraTracker
 		"""
-
-		self.request = request
 
 		self.current_config = WoopraTracker.DEFAULT_CONFIG
 		self.custom_config = {}
 
 		self.user = {}
 		self.events = []
-		
-		self.current_config["domain"] = self.request.META['HTTP_HOST']
-		self.current_config["cookie_domain"] = self.request.META['HTTP_HOST']
-		self.current_config["ip_address"] = self.get_client_ip()
 
 		self.user_up_to_date = True
 		self.has_pushed = False
-
-		self.current_config["cookie_value"] = request.COOKIES.get(self.current_config["cookie_name"], self.random_cookie())
 
 
 	def woopra_http_request(self, is_tracking, event = None):
@@ -88,17 +78,17 @@ class WoopraTracker:
 		else:
 			if(event == None):
 				get_params["ce_name"] = "pv"
-				get_params["ce_url"] = request.get_full_path()
 			else:
 				get_params["ce_name"] = event[0]
 				for k,v in event[1].iteritems():
 					get_params["ce_" + k] = v
 			url = "/track/ce/?" + urllib.urlencode(get_params)
 
-		user_agent = {'User-agent': self.request.META['HTTP_USER_AGENT']}
 		try:
 			conn = httplib.HTTPConnection(base_url)
-			conn.request("GET", url, headers=user_agent)
+			conn.request("GET", url)
+		except HTTPException:
+			print "exception occured"
 
 	def woopra_code(self):
 		"""
@@ -139,8 +129,6 @@ class WoopraTracker:
 				self.current_config[k] = v
 				if (k != "ip_address" and k != "cookie_value"):
 					self.custom_config[k] = v
-				if (k == "cookie_name"):
-					self.current_config["cookie_value"] = request.COOKIES.get(self.current_config["cookie_name"], self.current_config["cookie_value"])
 		return self
 
 
@@ -200,16 +188,6 @@ class WoopraTracker:
 			else:
 				self.has_pushed = True
 
-	def set_woopra_cookie(self, response):
-		"""
-		Sets the woopra cookie.
-		Parameter:
-			response - HttpResponse : The response in which the cookie should be set.
-		Result:
-			None
-		"""
-		response.set_cookie(self.current_config["cookie_name"], self.current_config["cookie_value"], 60*60*24*365*2)
-
 	def random_cookie(self):
 		"""
 		Generates a random 12 characters (Capital Letters and Numbers)
@@ -220,17 +198,3 @@ class WoopraTracker:
 		"""
 		return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(12))
 
-	def get_client_ip(self):
-		"""
-		Get the IP address of the client:
-		Parameter:
-			None
-		Result:
-			ip - str : the IP address of the client
-		"""
-		x_forwarded_for = self.request.META.get('HTTP_X_FORWARDED_FOR')
-		if x_forwarded_for:
-			ip = x_forwarded_for.split(',')[0]
-		else:
-			ip = self.request.META.get('REMOTE_ADDR')
-		return ip
