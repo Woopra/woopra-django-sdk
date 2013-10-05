@@ -98,7 +98,7 @@ class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 		return self
 
 
-	def send_woopra_cookie(self, response):
+	def set_woopra_cookie(self, response):
 		"""
 		Sets the woopra cookie.
 		Parameter:

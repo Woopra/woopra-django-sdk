@@ -12,8 +12,8 @@ def homepage(request):
    # Your code here...
    
    # When you're done setting up your WoopraTracker object, send a hook containing the value of
-   # woopra.woopraCode() among all the other hooks you are passing to the template.
-   response = render(request, 'homepage.html', {'woopra_code': woopra.woopraCode(), 'foo' : 'bar', })
+   # woopra.js_code() among all the other hooks you are passing to the template.
+   response = render(request, 'homepage.html', {'js_code': woopra.js_code(), 'foo' : 'bar', })
    #Set the cookie after the response was rendered, and before sending any headers
    woopra.setWoopraCookie(response)
    return response
@@ -55,7 +55,7 @@ def homepage(request):
 
    # Your code here...
    
-   response = render(request, 'homepage.html', {'woopra_code': woopra.woopraCode(), 'foo' : 'bar', })
+   response = render(request, 'homepage.html', {'js_code': woopra.js_code(), 'foo' : 'bar', })
    woopra.setWoopraCookie(response)
    return response
 ```
@@ -65,13 +65,21 @@ and add the hook in your template's header (here <code>homepage.html</code>)
 <html>
    <head>
       <!-- Your header here... -->
-      {{ woopra_code }}
+      {{ js_code }}
    </head>
    <body>
       <!-- Your body here... -->
 
    </body>
 </html>
+```
+Finally, if you wish to track your users only through the back-end, you should set the cookie on your user's browser. However, if you are planning to also use front-end tracking, don't even bother with that step, the JavaScript tracker will handle it for you.
+``` python
+...
+response = render(request, 'homepage.html', {'js_code': woopra.js_code(), 'foo' : 'bar', })
+#Set the cookie after the response was rendered, and before sending any headers
+woopra.setWoopraCookie(response)
+return response
 ```
 If you are using another Python Web Framework than Django, you should use the WoopraTracker class instead of the WoopraTrackerDjango class. The constructor of WoopraTracker doesn't require an instance of django.http.HttpRequest. However, for the tracker to work properly, you should configure manually the domain, the cookie_domain, the cookie_value, and the ip_address of the user being tracked:
 ``` python

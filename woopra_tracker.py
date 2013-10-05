@@ -90,7 +90,7 @@ class WoopraTracker:
 		except HTTPException:
 			print "exception occured"
 
-	def woopra_code(self):
+	def js_code(self):
 		"""
 		This method returns the woopra code string to be passed to the Template, and outputed in its header.
 		Parameters:
