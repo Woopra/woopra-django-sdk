@@ -25,7 +25,7 @@ class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 			WoopraTracker
 		"""
 
-		woopraTracker.WoopraTracker.__init__(self)
+		woopra_tracker.WoopraTracker.__init__(self)
 
 		self.request = request
 		self.current_config["domain"] = self.request.META['HTTP_HOST']
