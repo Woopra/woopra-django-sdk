@@ -10,13 +10,7 @@ def homepage(request):
    woopra.config({'domain' : 'mybusiness.com'})
 
    # Your code here...
-   
-   # When you're done setting up your WoopraTracker object, send a hook containing the value of
-   # woopra.js_code() among all the other hooks you are passing to the template.
-   response = render(request, 'homepage.html', {'js_code': woopra.js_code(), 'foo' : 'bar', })
-   #Set the cookie after the response was rendered, and before sending any headers
-   woopra.setWoopraCookie(response)
-   return response
+
 ```
 You can also customize all the properties of the woopra during that step by adding them to the config_dict. For example, to also update your idle timeout (default: 30 seconds):
 ``` python
@@ -55,8 +49,9 @@ def homepage(request):
 
    # Your code here...
    
+   # When you're done setting up your WoopraTracker object, send a hook containing the value of
+   # woopra.js_code() among all the other hooks you are passing to the template.
    response = render(request, 'homepage.html', {'js_code': woopra.js_code(), 'foo' : 'bar', })
-   woopra.setWoopraCookie(response)
    return response
 ```
 and add the hook in your template's header (here <code>homepage.html</code>)
@@ -77,8 +72,8 @@ Finally, if you wish to track your users only through the back-end, you should s
 ``` python
 ...
 response = render(request, 'homepage.html', {'js_code': woopra.js_code(), 'foo' : 'bar', })
-#Set the cookie after the response was rendered, and before sending any headers
-woopra.setWoopraCookie(response)
+#Set the cookie after the response was rendered, and before sending any headers:
+woopra.set_woopra_cookie(response)
 return response
 ```
 If you are using another Python Web Framework than Django, you should use the WoopraTracker class instead of the WoopraTrackerDjango class. The constructor of WoopraTracker doesn't require an instance of django.http.HttpRequest. However, for the tracker to work properly, you should configure manually the domain, the cookie_domain, the cookie_value, and the ip_address of the user being tracked:
