@@ -15,7 +15,7 @@ class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 	This class represents the Python equivalent of the JavaScript Woopra Object.
 	It is specific for use with the Django Web Framework
 	"""
-
+	
 	def __init__(self, request):
 		"""
 		The constructor.
@@ -32,7 +32,6 @@ class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 		self.current_config["cookie_domain"] = self.request.META['HTTP_HOST']
 		self.current_config["ip_address"] = self.get_client_ip()
 		self.current_config["cookie_value"] = request.COOKIES.get(self.current_config["cookie_name"], self.random_cookie())
-
 
 	def woopra_http_request(self, is_tracking, event = None):
 		"""
@@ -59,7 +58,7 @@ class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 		if not is_tracking:
 			url = "/track/identify/?" + urllib.urlencode(get_params)
 		else:
-			if(event == None):
+			if event == None:
 				get_params["ce_name"] = "pv"
 				get_params["ce_url"] = request.get_full_path()
 			else:
@@ -74,7 +73,6 @@ class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 			conn.request("GET", url, headers=user_agent)
 		except HTTPException:
 			print "exception occured"
-
 
 	def config(self, data):
 		"""
@@ -91,12 +89,11 @@ class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 		for k, v in data.iteritems():
 			if k in WoopraTrackerDjango.DEFAULT_CONFIG:
 				self.current_config[k] = v
-				if (k != "ip_address" and k != "cookie_value"):
+				if k != "ip_address" and k != "cookie_value":
 					self.custom_config[k] = v
-				if (k == "cookie_name"):
-					self.current_config["cookie_value"] = request.COOKIES.get(self.current_config["cookie_name"], self.current_config["cookie_value"])
+					if k == "cookie_name":
+						self.current_config["cookie_value"] = request.COOKIES.get(self.current_config["cookie_name"], self.current_config["cookie_value"])
 		return self
-
 
 	def set_woopra_cookie(self, response):
 		"""
@@ -107,7 +104,6 @@ class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 			None
 		"""
 		response.set_cookie(self.current_config["cookie_name"], self.current_config["cookie_value"], 60*60*24*365*2)
-
 
 	def get_client_ip(self):
 		"""

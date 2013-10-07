@@ -31,7 +31,6 @@ class WoopraTracker:
 		"cookie_value" : ""
 	}
 
-
 	def __init__(self):
 		"""
 		The constructor.
@@ -49,7 +48,6 @@ class WoopraTracker:
 
 		self.user_up_to_date = True
 		self.has_pushed = False
-
 
 	def woopra_http_request(self, is_tracking, event = None):
 		"""
@@ -76,7 +74,7 @@ class WoopraTracker:
 		if not is_tracking:
 			url = "/track/identify/?" + urllib.urlencode(get_params)
 		else:
-			if(event == None):
+			if event == None:
 				get_params["ce_name"] = "pv"
 			else:
 				get_params["ce_name"] = event[0]
@@ -99,18 +97,17 @@ class WoopraTracker:
 			code - str : The front-end tracking code.
 		"""
 		code = '\n   <!-- Woopra code starts here -->\n   <script>\n      (function(){\n      var t,i,e,n=window,o=document,a=arguments,s="script",r=["config","track","identify","visit","push","call"],c=function(){var t,i=this;for(i._e=[],t=0;r.length>t;t++)(function(t){i[t]=function(){return i._e.push([t].concat(Array.prototype.slice.call(arguments,0))),i}})(r[t])};for(n._w=n._w||{},t=0;a.length>t;t++)n._w[a[t]]=n[a[t]]=n[a[t]]||new c;i=o.createElement(s),i.async=1,i.src="//static.woopra.com/js/w.js",e=o.getElementsByTagName(s)[0],e.parentNode.insertBefore(i,e)\n      })("woopra");\n'
-		if (len(self.custom_config) != 0):
+		if len(self.custom_config) != 0:
 			code += "      woopra.config(" + json.dumps(self.custom_config) + ");\n"
 		if not self.user_up_to_date:
 			code += "      woopra.identify(" + json.dumps(self.user) + ");\n"
-		if (len(self.events) != 0):
+		if len(self.events) != 0:
 			for event in self.events:
 				code += "      woopra.track('" + event[0] + "', " + json.dumps(event[1]) + ");\n"
 		if self.has_pushed:
 			code += "      woopra.push();\n"
 		code += "   </script>\n   <!-- Woopra code ends here -->\n"
 		return code
-
 
 	def config(self, data):
 		"""
@@ -127,12 +124,9 @@ class WoopraTracker:
 		for k, v in data.iteritems():
 			if k in WoopraTracker.DEFAULT_CONFIG:
 				self.current_config[k] = v
-				if (k != "ip_address" and k != "cookie_value"):
+				if k != "ip_address" and k != "cookie_value":
 					self.custom_config[k] = v
 		return self
-
-
-
 
 	def identify(self, user):
 		"""
@@ -173,7 +167,6 @@ class WoopraTracker:
 			self.events += [[event_name, event_data]]
 		return self
 
-
 	def push(self, back_end_tracking = False):
 		"""
 		Pushes the indentification information on the user to Woopra in case no tracking event occurs.
@@ -197,4 +190,3 @@ class WoopraTracker:
 			None
 		"""
 		return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(12))
-
