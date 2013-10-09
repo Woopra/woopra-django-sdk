@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import string
 import random
@@ -31,69 +31,9 @@ class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 		self.current_config["domain"] = self.request.META['HTTP_HOST']
 		self.current_config["cookie_domain"] = self.request.META['HTTP_HOST']
 		self.current_config["ip_address"] = self.get_client_ip()
-		self.current_config["cookie_value"] = request.COOKIES.get(self.current_config["cookie_name"], self.random_cookie())
-
-	def woopra_http_request(self, is_tracking, event = None):
-		"""
-		Sends an Http Request to Woopra for back-end identification and/or tracking.
-		Parameters:
-			isTracking - boolean : is this request supposed to track an event or just identify the user?
-			event (optional) - dict : only matters if isTracking == True. The event to pass. Default is None.
-		Result:
-			None
-		"""
-		base_url = "www.woopra.com"
-		get_params = {}
-
-		# Configuration
-		get_params["host"] = self.current_config["domain"]
-		get_params["cookie"] = self.current_config["cookie_value"]
-		get_params["ip"] = self.current_config["ip_address"]
-		get_params["timeout"] = self.current_config["idle_timeout"]
-
-		# Identification
-		for k, v in self.user.iteritems():
-			get_params["cv_" + k] = v
-
-		if not is_tracking:
-			url = "/track/identify/?" + urllib.urlencode(get_params)
-		else:
-			if event == None:
-				get_params["ce_name"] = "pv"
-				get_params["ce_url"] = request.get_full_path()
-			else:
-				get_params["ce_name"] = event[0]
-				for k,v in event[1].iteritems():
-					get_params["ce_" + k] = v
-			url = "/track/ce/?" + urllib.urlencode(get_params)
-
-		user_agent = {'User-agent': self.request.META['HTTP_USER_AGENT']}
-		try:
-			conn = httplib.HTTPConnection(base_url)
-			conn.request("GET", url, headers=user_agent)
-		except HTTPException:
-			print "exception occured"
-
-	def config(self, data):
-		"""
-		Configure WoopraTracker Object.
-		Parameter:
-			data - dict :
-				key - str : the configuration option
-				value - str, int, bool : the configuration value
-		Result:
-			WoopraTracker
-		Example:
-			config({'domain' : 'mywebsite.com', 'ping' : True})
-		"""
-		for k, v in data.iteritems():
-			if k in WoopraTrackerDjango.DEFAULT_CONFIG:
-				self.current_config[k] = v
-				if k != "ip_address" and k != "cookie_value":
-					self.custom_config[k] = v
-					if k == "cookie_name":
-						self.current_config["cookie_value"] = request.COOKIES.get(self.current_config["cookie_name"], self.current_config["cookie_value"])
-		return self
+		self.current_config["cookie_value"] = self.request.COOKIES.get(self.current_config["cookie_name"], self.random_cookie())
+		self.current_config["user_agent"] = self.request.META['HTTP_USER_AGENT']
+		self.current_config["current_url"] = request.get_full_path()
 
 	def set_woopra_cookie(self, response):
 		"""
@@ -119,3 +59,14 @@ class WoopraTrackerDjango(woopra_tracker.WoopraTracker):
 		else:
 			ip = self.request.META.get('REMOTE_ADDR')
 		return ip
+
+	def actualize_cookie(self):
+		"""
+		If the cookie name changes, call this method to see if a cookie matches the new name, and update cookie_value.
+		Parameter:
+			None
+		Result:
+			None
+		"""
+		self.current_config["cookie_value"] = self.request.COOKIES.get(self.current_config["cookie_name"], self.current_config["cookie_value"])
+

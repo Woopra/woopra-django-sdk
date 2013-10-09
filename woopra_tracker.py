@@ -1,4 +1,4 @@
-#-*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 
 import string
 import random
@@ -28,7 +28,9 @@ class WoopraTracker:
 		"ignore_query_url" : True,
 		"hide_campaign" : False,
 		"ip_address" : "",
-		"cookie_value" : ""
+		"cookie_value" : "",
+		"user_agent" : "",
+		"current_url" : ""
 	}
 
 	def __init__(self):
@@ -76,15 +78,17 @@ class WoopraTracker:
 		else:
 			if event == None:
 				get_params["ce_name"] = "pv"
+				get_params["ce_url"] = self.current_config["current_url"]
 			else:
 				get_params["ce_name"] = event[0]
 				for k,v in event[1].iteritems():
 					get_params["ce_" + k] = v
 			url = "/track/ce/?" + urllib.urlencode(get_params)
 
+		user_agent = {'User-agent': self.request.META['HTTP_USER_AGENT']}
 		try:
 			conn = httplib.HTTPConnection(base_url)
-			conn.request("GET", url)
+			conn.request("GET", url, headers=user_agent)
 		except HTTPException:
 			print "exception occured"
 
@@ -103,7 +107,10 @@ class WoopraTracker:
 			code += "      woopra.identify(" + json.dumps(self.user) + ");\n"
 		if len(self.events) != 0:
 			for event in self.events:
-				code += "      woopra.track('" + event[0] + "', " + json.dumps(event[1]) + ");\n"
+				if event[0] == None:
+					code += "      woopra.track();\n"
+				else:
+					code += "      woopra.track('" + event[0] + "', " + json.dumps(event[1]) + ");\n"
 		if self.has_pushed:
 			code += "      woopra.push();\n"
 		code += "   </script>\n   <!-- Woopra code ends here -->\n"
@@ -126,6 +133,8 @@ class WoopraTracker:
 				self.current_config[k] = v
 				if k != "ip_address" and k != "cookie_value":
 					self.custom_config[k] = v
+					if k == "cookie_name":
+						self.actualize_cookie
 		return self
 
 	def identify(self, user):
@@ -190,3 +199,13 @@ class WoopraTracker:
 			None
 		"""
 		return ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(12))
+
+	def actualize_cookie(self):
+		"""
+		If the cookie name changes, call this method to see if a cookie matches the new name, and update cookie_value.
+		Parameter:
+			None
+		Result:
+			None
+		"""
+		pass
