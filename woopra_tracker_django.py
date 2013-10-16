@@ -15,6 +15,7 @@ class WoopraTrackerDjango:
 	It is specific for use with the Django Web Framework
 	"""
 
+	SDK_ID = "python_django_sdk"
 	# Default Configuration Dictionary
 	DEFAULT_CONFIG = {
 		"domain" : "", 
@@ -87,7 +88,7 @@ class WoopraTrackerDjango:
 			get_params["cv_" + k] = v
 
 		if not is_tracking:
-			url = "/track/identify/?" + urllib.urlencode(get_params)
+			url = "/track/identify/?" + urllib.urlencode(get_params) + "&app=" + WoopraTrackerDjango.SDK_ID
 		else:
 			if event == None:
 				get_params["ce_name"] = "pv"
@@ -97,7 +98,7 @@ class WoopraTrackerDjango:
 				get_params["ce_name"] = event[0]
 				for k,v in event[1].iteritems():
 					get_params["ce_" + k] = v
-			url = "/track/ce/?" + urllib.urlencode(get_params)
+			url = "/track/ce/?" + urllib.urlencode(get_params) + "&app=" + WoopraTrackerDjango.SDK_ID
 
 		user_agent = self.request.META['HTTP_USER_AGENT']
 		try:
