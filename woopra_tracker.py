@@ -8,14 +8,14 @@ import httplib
 from django.http import HttpRequest
 from django.http import HttpResponse
 
-class WoopraTrackerDjango:
+class WoopraTracker:
 	"""
 	Woopra Python SDK.
 	This class represents the Python equivalent of the JavaScript Woopra Object.
 	It is specific for use with the Django Web Framework
 	"""
 
-	SDK_ID = "python_django_sdk"
+	SDK_ID = "django"
 	# Default Configuration Dictionary
 	DEFAULT_CONFIG = {
 		"domain" : "", 
@@ -46,7 +46,7 @@ class WoopraTrackerDjango:
 			WoopraTracker
 		"""
 
-		self.current_config = WoopraTrackerDjango.DEFAULT_CONFIG
+		self.current_config = WoopraTracker.DEFAULT_CONFIG
 		self.custom_config = {}
 
 		self.user = {}
@@ -88,7 +88,7 @@ class WoopraTrackerDjango:
 			get_params["cv_" + k] = v
 
 		if not is_tracking:
-			url = "/track/identify/?" + urllib.urlencode(get_params) + "&app=" + WoopraTrackerDjango.SDK_ID
+			url = "/track/identify/?" + urllib.urlencode(get_params) + "&ce__w_app=" + WoopraTracker.SDK_ID
 		else:
 			if event == None:
 				get_params["ce_name"] = "pv"
@@ -98,7 +98,7 @@ class WoopraTrackerDjango:
 				get_params["ce_name"] = event[0]
 				for k,v in event[1].iteritems():
 					get_params["ce_" + k] = v
-			url = "/track/ce/?" + urllib.urlencode(get_params) + "&app=" + WoopraTrackerDjango.SDK_ID
+			url = "/track/ce/?" + urllib.urlencode(get_params) + "&ce__w_app=" + WoopraTracker.SDK_ID
 
 		user_agent = self.request.META['HTTP_USER_AGENT']
 		try:
@@ -150,7 +150,7 @@ class WoopraTrackerDjango:
 			config({'domain' : 'mywebsite.com', 'ping' : True})
 		"""
 		for k, v in data.iteritems():
-			if k in WoopraTrackerDjango.DEFAULT_CONFIG:
+			if k in WoopraTracker.DEFAULT_CONFIG:
 				self.current_config[k] = v
 				if k != "ip_address" and k != "cookie_value":
 					self.custom_config[k] = v

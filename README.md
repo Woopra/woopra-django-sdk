@@ -1,16 +1,16 @@
 Track customers directly in the Django Web Framework using Woopra's Django SDK
 
-The purpose of this SDK is to allow our customers who have Python-based servers to track their users by writing only Python code. Tracking directly in Python will allow you to decide whether you want to track your users:
+The purpose of this SDK is to allow our customers who have servers running the Django Framework to track their users by writing only Python code. Tracking directly in Python will allow you to decide whether you want to track your users:
 - through the front-end: after configuring the tracker, identifying the user, and tracking page views and events in Python, the SDK will generate the corresponding JavaScript code, and by passing this code to your view using a hook (examples will be shown below), you will be able to print that code in your view's header.
 - through the back-end: after configuring the tracker & identifying the user, add the optional parameter true to the methods <code>track</code> or <code>push</code>, and the Python tracker will handle sending the data to Woopra by making HTTP Requests. By doing that, the client is never involved in the tracking process.
 
 The first step is to setup the tracker SDK in your <code>views.py</code> file. For example, if you want to set up tracking with Woopra on your homepage, the file <code>views.py</code> should look like:
 ``` python
 #import the SDK
-import woopra_tracker_django
+import woopra_tracker
 
 def homepage(request):
-   woopra = woopra_tracker_django.WoopraTrackerDjango(request)
+   woopra = woopra_tracker.WoopraTracker(request)
    woopra.config({'domain' : 'mybusiness.com'})
 
    # Your code here...
@@ -81,8 +81,3 @@ response = render(request, 'homepage.html', {'woopra_code': woopra.js_code(), 'f
 woopra.set_woopra_cookie(response)
 return response
 ```
-If you are using another Python Web Framework than Django, you should use the WoopraTracker class instead of the WoopraTrackerDjango class. The constructor of WoopraTracker doesn't require an instance of django.http.HttpRequest. However, for the tracker to work properly, you should configure manually the domain, the cookie_domain, the cookie_value, and the ip_address of the user being tracked:
-``` python
-woopra.config({'domain':'mywebsite.com', 'cookie_domain':'mywebsite.com', 'cookie_value':'COOKIEVALUE', 'ip_address':'0.0.0.0'})
-```
-Instead of calling the set_woopra_cookie(response) method to set the Woopra cookie on the user's browser, you should set it manually (this step depends on the Python-based Web Framework you are using).
