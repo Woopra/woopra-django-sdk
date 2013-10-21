@@ -44,7 +44,7 @@ You can also track custom events through the front-end or the back-end. With all
 import woopraTracker
 
 def homepage(request):
-   woopra = woopraTracker.WoopraTracker(request)
+   woopra = woopra_tracker.WoopraTracker(request)
    woopra.config(config_dict).identify(user_dict).track()
    # Track a custom event through the front end...
    woopra.track("play", {'artist' : 'Dave Brubeck', 'song' : 'Take Five', 'genre' : 'Jazz'})
