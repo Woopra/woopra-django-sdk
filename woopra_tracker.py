@@ -47,7 +47,7 @@ class WoopraTracker:
 		"""
 
 		self.current_config = WoopraTracker.DEFAULT_CONFIG
-		self.custom_config = {}
+		self.custom_config = {"app" : WoopraTracker.SDK_ID}
 
 		self.user = {}
 		self.events = []
@@ -88,9 +88,9 @@ class WoopraTracker:
 			get_params["cv_" + k] = v
 
 		if not is_tracking:
-			url = "/track/identify/?" + urllib.urlencode(get_params) + "&ce__w_app=" + WoopraTracker.SDK_ID
+			url = "/track/identify/?" + urllib.urlencode(get_params) + "&app=" + WoopraTracker.SDK_ID
 		else:
-			if event == None:
+			if event[0] == None:
 				get_params["ce_name"] = "pv"
 				if not self.current_config["current_url"] == "":
 					get_params["ce_url"] = self.current_config["current_url"]
@@ -98,7 +98,7 @@ class WoopraTracker:
 				get_params["ce_name"] = event[0]
 				for k,v in event[1].iteritems():
 					get_params["ce_" + k] = v
-			url = "/track/ce/?" + urllib.urlencode(get_params) + "&ce__w_app=" + WoopraTracker.SDK_ID
+			url = "/track/ce/?" + urllib.urlencode(get_params) + "&app=" + WoopraTracker.SDK_ID
 
 		user_agent = self.request.META['HTTP_USER_AGENT']
 		try:

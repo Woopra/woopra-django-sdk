@@ -37,7 +37,7 @@ If you wish to track page views, just call track():
 ``` python
 woopra.track()
 # Or, for back-end tracking:
-woopra.track(True)
+woopra.track(back_end_tracking = True)
 ```
 You can also track custom events through the front-end or the back-end. With all the previous steps done at once, your <code>views.py</code> file should look like:
 ``` python
