@@ -88,7 +88,7 @@ class WoopraTracker:
 			get_params["cv_" + k] = v
 
 		if not is_tracking:
-			url = "/track/identify/?" + urllib.urlencode(get_params) + "&ce__w_app=" + WoopraTracker.SDK_ID
+			url = "/track/identify/?" + urllib.urlencode(get_params) + "&ce_app=" + WoopraTracker.SDK_ID
 		else:
 			if event[0] == None:
 				get_params["ce_name"] = "pv"
@@ -98,7 +98,7 @@ class WoopraTracker:
 				get_params["ce_name"] = event[0]
 				for k,v in event[1].iteritems():
 					get_params["ce_" + k] = v
-			url = "/track/ce/?" + urllib.urlencode(get_params) + "&ce__w_app=" + WoopraTracker.SDK_ID
+			url = "/track/ce/?" + urllib.urlencode(get_params) + "&ce_app=" + WoopraTracker.SDK_ID
 
 		user_agent = self.request.META['HTTP_USER_AGENT']
 		try:
@@ -255,4 +255,3 @@ class WoopraTracker:
 			None
 		"""
 		self.current_config["cookie_value"] = self.request.COOKIES.get(self.current_config["cookie_name"], self.current_config["cookie_value"])
-
